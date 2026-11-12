@@ -1,0 +1,40 @@
+# Render "Blueprint": Jarvis'i ücretsiz bulut sunucusunda çalıştırır. Adımlar: RENDER-KURULUM.md
+services:
+  - type: web
+    name: jarvis
+    runtime: node
+    plan: free
+    # tsx (sunucuyu çalıştıran) ve vite (arayüzü derleyen) devDependencies'te olduğu için --include=dev şart
+    buildCommand: npm --prefix server install --include=dev && npm --prefix web install --include=dev && npm --prefix web run build
+    startCommand: npm --prefix server start
+    # /api erişim anahtarı ister (401 döner); kök sayfa anahtarsız açılır
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Render rastgele bir erişim anahtarı üretir; Dashboard → Environment bölümünde görürsünüz
+      - key: ACCESS_TOKEN
+        generateValue: true
+      # Gemini anahtarınızı Render sorunca yapıştırırsınız (dosyaya yazılmaz)
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_BASE_URL
+        value: https://generativelanguage.googleapis.com/v1beta/openai
+      - key: CHAT_MODEL
+        value: gemini-3.8-flash
+      - key: VISION_MODEL
+        value: gemini-3.8-flash
+      - key: STT_MODEL
+        value: gemini-3.8-flash
+      - key: TTS_MODEL
+        value: browser
+      - key: TTS_VOICE
+        value: tarayici
+      - key: USER_NAME
+        value: Halil
+      - key: WEATHER_CITY
+        value: İstanbul
+      - key: WEATHER_LAT
+        value: "41.01"
+      - key: WEATHER_LON
+        value: "28.98"
